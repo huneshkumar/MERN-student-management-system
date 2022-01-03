@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({limit:"20mb", extended:true}))
 app.use(cors())
 
 
-const CONNECTION_URL="mongodb+srv://hunesh:admin1996@cluster0.qumje.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const CONNECTION_URL="YOUR DATABSE CONNECTION URL"
 
 mongoose.connect(CONNECTION_URL).then(()=>{
     console.log('sucessfuly conected')
