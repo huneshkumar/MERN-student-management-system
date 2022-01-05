@@ -24,15 +24,39 @@ import {
 } from "@chakra-ui/modal";
 import { Input } from "@chakra-ui/input";
 
+import axios from 'axios'
+
 function ShowStudent(props) {
   const [Delete, setDelete] = useState(false);
   const [update, setUpdate] = useState(false);
+  const[student,setStudent]=useState({
+    regNo:0,
+    name:'',
+    grade:'',
+    section:''
+  })
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   // const onDrop = useCallback(acceptedFiles => {
   //     // Do something with the files
   // }, [])
   // const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+  function handleChange(e, fieldName) {
+    const {value} = e.target;
+    let inputData = {...student};
+    inputData[fieldName] = value;
+    setStudent(inputData);
+    console.log(student)
+}
+
+const createStudentRecord=()=>{
+  axios.post('http://localhost:5000/students',student).then(()=>{
+      console.log('added')
+  }).catch((err)=>{
+    console.log(err.message)
+  })
+}
 
   return (
     <>
@@ -80,6 +104,7 @@ function ShowStudent(props) {
               <Td border="0.75px solid #9A9A9A">ID</Td>
               <Td border="0.75px solid #9A9A9A">Name</Td>
               <Td border="0.75px solid #9A9A9A">Grade</Td>
+              <Td border="0.75px solid #9A9A9A">Section</Td>
             </Tr>
           </Thead>
           <Tbody>
@@ -104,6 +129,13 @@ function ShowStudent(props) {
                 fontWeight="700"
               >
                 grade
+              </Td>
+              <Td
+                border="0.75px solid #9A9A9A"
+                fontSize="13px"
+                fontWeight="700"
+              >
+                section
               </Td>
             </Tr>
           </Tbody>
@@ -133,14 +165,17 @@ function ShowStudent(props) {
                 {/* column 1 */}
                 <Stack spacing={4}>
                   <HStack>
-                    <Text fontSize="13px" w="300px" textAlign="end">
+                    <Text fontSize="13px"  w="300px" textAlign="end">
                       Student ID
                     </Text>
                     <Input
                       h="50px"
+                      name="id"
+                      value={student.regNo}
                       disabled={true}
                       border="0.75px solid #9A9A9A"
                       borderRadius="none"
+                      onChange={(e)=>{handleChange(e,e.target.name)}}
                     />
                   </HStack>
                   <HStack>
@@ -148,9 +183,12 @@ function ShowStudent(props) {
                       Student Name
                     </Text>
                     <Input
+                    name="name"
+                    value={student.name}
                       h="50px"
                       border="0.75px solid #9A9A9A"
                       borderRadius="none"
+                      onChange={(e)=>{handleChange(e,e.target.name)}}
                     />
                   </HStack>
 
@@ -159,9 +197,25 @@ function ShowStudent(props) {
                       Student Grade
                     </Text>
                     <Input
+                    name="grade"
+                    value={student.grade}
                       h="50px"
                       border="0.75px solid #9A9A9A"
                       borderRadius="none"
+                      onChange={(e)=>{handleChange(e,e.target.name)}}
+                    />
+                  </HStack>
+                  <HStack align="start">
+                    <Text fontSize="13px" w="300px" textAlign="end">
+                      Section
+                    </Text>
+                    <Input
+                    name="section"
+                    value={student.section}
+                      h="50px"
+                      border="0.75px solid #9A9A9A"
+                      borderRadius="none"
+                      onChange={(e)=>{handleChange(e,e.target.name)}}
                     />
                   </HStack>
                 </Stack>
@@ -209,6 +263,7 @@ function ShowStudent(props) {
                 color="white"
                 fontSize="16px"
                 fontWeight="800"
+                onClick={createStudentRecord}
               >
                 Save
               </Button>

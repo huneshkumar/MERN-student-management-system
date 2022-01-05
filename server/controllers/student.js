@@ -1,9 +1,9 @@
 
-
+import studentData from '../models/student.js'
 export const getStudents= async (req,res)=>{
     try {
         
-        const allStudents= await student.find()
+        const allStudents= await studentData.find()
         res.status(200).json(allStudents)
 
     } catch (error) {
@@ -13,9 +13,10 @@ export const getStudents= async (req,res)=>{
 
 
 export const createStudent= async (req,res)=>{
-    const studentData=req.body
+    
+    const student=req.body
 
-    const newStudent=new student(studentData)
+    const newStudent=new studentData(student)
 
     try {
         await newStudent.save()
