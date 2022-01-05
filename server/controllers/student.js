@@ -15,9 +15,8 @@ export const getStudents= async (req,res)=>{
 export const createStudent= async (req,res)=>{
     
     const student=req.body
-
+    console.log(student)
     const newStudent=new studentData(student)
-
     try {
         await newStudent.save()
         res.status(201).json(newStudent)
@@ -27,5 +26,17 @@ export const createStudent= async (req,res)=>{
     }
 }
 
+
+export const deleteStudent= async (req,res)=>{
+    const id=req.params.id
+
+    try {
+        await studentData.findByIdAndRemove(id).exec()
+        res.send('deleted')
+    } catch (error) {
+        res.send(error.message)
+    }
+
+}
 
 

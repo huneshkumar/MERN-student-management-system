@@ -1,9 +1,18 @@
 import mongoose from 'mongoose';
 
 const studentSchema=mongoose.Schema({
-    regNo:Number,
-    name:String,
-    grade:String,
+    regNo:{
+        type:Number,
+        default:0
+    },
+    name:{
+        type:String,
+        default:''
+    },
+    grade:{
+        type:String,
+        default:''
+    },
     section:{
         type:String,
         default:'A'

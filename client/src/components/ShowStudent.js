@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Table, Tbody, Td, Thead, Tr } from "@chakra-ui/table";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback,useEffect } from "react";
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
@@ -29,12 +29,24 @@ import axios from 'axios'
 function ShowStudent(props) {
   const [Delete, setDelete] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [studentList,setStudentList]=useState([])
+  const [studentId,setStudentId]=useState()
+
+
   const[student,setStudent]=useState({
     regNo:0,
-    name:'',
-    grade:'',
-    section:''
+    name:'hunesh',
+    grade:'A',
+    section:'1'
   })
+
+  useEffect(() => {
+   axios.get('http://localhost:5000/students').then((res)=>{
+     setStudentList(res.data)
+   }).catch((error)=>{
+     console.log(error.message)
+   })
+  },[])
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   // const onDrop = useCallback(acceptedFiles => {
@@ -51,8 +63,20 @@ function ShowStudent(props) {
 }
 
 const createStudentRecord=()=>{
+  console.log(student)
   axios.post('http://localhost:5000/students',student).then(()=>{
-      console.log('added')
+      console.log(student)
+      window.location.reload(false)
+  }).catch((err)=>{
+    console.log(err.message)
+  })
+}
+
+const deleteStudentRecord=(id)=>{
+  
+  axios.delete(`http://localhost:5000/students/${id}`,student).then(()=>{
+      console.log(student)
+      window.location.reload(false)
   }).catch((err)=>{
     console.log(err.message)
   })
@@ -108,36 +132,47 @@ const createStudentRecord=()=>{
             </Tr>
           </Thead>
           <Tbody>
-            <Tr cursor="pointer" onClick={onOpen} >
-              <Td
-                border="0.75px solid #9A9A9A"
-                fontSize="13px"
-                fontWeight="700"
-              >
-                id
-              </Td>
-              <Td
-                border="0.75px solid #9A9A9A"
-                fontSize="13px"
-                fontWeight="700"
-              >
-                name
-              </Td>
-              <Td
-                border="0.75px solid #9A9A9A"
-                fontSize="13px"
-                fontWeight="700"
-              >
-                grade
-              </Td>
-              <Td
-                border="0.75px solid #9A9A9A"
-                fontSize="13px"
-                fontWeight="700"
-              >
-                section
-              </Td>
-            </Tr>
+            {
+              studentList.map((student)=>{
+                return(
+                  <Tr cursor="pointer" onClick={()=>{
+                    onOpen()
+                    setStudentId(student._id)
+                    setUpdate(true)
+                  }} >
+                  <Td
+                    border="0.75px solid #9A9A9A"
+                    fontSize="13px"
+                    fontWeight="700"
+                  >
+                    {student.regNo}
+                  </Td>
+                  <Td
+                    border="0.75px solid #9A9A9A"
+                    fontSize="13px"
+                    fontWeight="700"
+                  >
+                    {student.name}
+                  </Td>
+                  <Td
+                    border="0.75px solid #9A9A9A"
+                    fontSize="13px"
+                    fontWeight="700"
+                  >
+                    {student.grade}
+                  </Td>
+                  <Td
+                    border="0.75px solid #9A9A9A"
+                    fontSize="13px"
+                    fontWeight="700"
+                  >
+                    {student.section}
+                  </Td>
+                </Tr>
+                )
+              })
+            }
+           
           </Tbody>
         </Table>
         <Button
@@ -170,9 +205,8 @@ const createStudentRecord=()=>{
                     </Text>
                     <Input
                       h="50px"
-                      name="id"
+                      name="regNo"
                       value={student.regNo}
-                      disabled={true}
                       border="0.75px solid #9A9A9A"
                       borderRadius="none"
                       onChange={(e)=>{handleChange(e,e.target.name)}}
@@ -249,8 +283,9 @@ const createStudentRecord=()=>{
                   color="white"
                   fontSize="16px"
                   fontWeight="800"
+                  onClick={()=>{deleteStudentRecord(studentId)}}
                 >
-                  Update
+                  Delete
                 </Button>
               </HStack>
             ) : (
